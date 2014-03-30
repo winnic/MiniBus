@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:orientation="vertical" >
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="109dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="30dp"
+        android:text="Search in"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="16sp" />
+ 
+    <Spinner
+        android:id="@+id/cuhkLibs_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:minHeight="60dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:textSize="20dip" 
+        android:textAlignment="center" />
+
+    <LinearLayout 
+                android:id="@+id/relativeLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+	    <EditText
+	        android:id="@+id/keyWords"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="5dp"
+	        android:layout_marginTop="50dp"
+	        android:layout_weight="3.35"
+	        android:ems="10"
+	        android:hint="@string/keyWords"
+	        android:textSize="20dip" >
+	
+	        <requestFocus />
+	    </EditText>
+
+	    <Button
+	        android:id="@+id/inputButton"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="50dp"
+	        android:layout_alignBottom="@+id/editText1"
+	        android:layout_alignParentRight="true"
+	        android:layout_weight="1"
+	        android:text="@string/speak" />
+	    
+    </LinearLayout>
+
+   <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+    
+	    <Button
+	        android:id="@+id/searchBtn"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentRight="true"
+	        android:layout_marginRight="16dp"
+	        android:layout_marginTop="10dp"
+	        android:text="@string/search"
+	        android:textAlignment="gravity" />
+	  
+	</RelativeLayout>
+   
+   
+   <TextView
+       android:id="@+id/output"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:textSize="10sp"
+       android:textAppearance="?android:attr/textAppearanceMedium" 
+       android:scrollbars = "vertical"/>
+ 
+</LinearLayout>

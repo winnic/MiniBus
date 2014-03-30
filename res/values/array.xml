@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	
+    <string-array name="libNames">
+		<item>University Library</item>
+		<item>Chung Chi College Elisabeth Luce Moore Library</item>
+		<item>New Asia College Ch\&apos;ien Mu Library</item>
+		<item>United College Wu Chung Multimedia Library</item>
+		<item>Architecture Library</item>
+		<item>Li Ping Medical Library</item>
+		<item>Lee Quo Wei Law Library</item>
+	</string-array>
+
+    <string-array name="libLocations">
+	<item>The Chinese University of Hong Kong,Shatin, N.T., Hong Kong</item>
+	<item>Chung Chi College, Shatin, N.T., Hong Kong</item>
+	<item>New Asia College, Shatin, N.T., Hong Kong</item>
+	<item>United College, Shatin, N.T., Hong Kong</item>
+	<item>3/F-4/F, An Integrated Teaching Building, Chung Chi Campus, The Chinese University of Hong Kong, Shatin, N.T., Hong Kong</item>
+	<item>2/F, Clinical Sciences Building, Prince of Wales Hospital, Shatin</item>
+	<item>4/F, Tin Ka Ping Building, Shatin, N.T., Hong Kong</item>
+	</string-array>
+	
+	<string-array name="libPhones">
+		<item>(852) 3943 7305</item>
+		<item>(852) 3943 6969</item>
+		<item>(852) 3943 7655</item>
+		<item>(852) 3943 7564</item>
+		<item>(852) 3943 6599</item>
+		<item>(852) 2632 2459</item>
+		<item>(852) 3943 8641</item>
+	</string-array>
+
+	
+	<string-array name="website">
+		<item>&lt;a href="http://www.lib.cuhk.edu.hk/Common/Reader/Channel/ShowCalendar.jsp?Cid=763&amp;Pid=46&amp;Version=0&amp;Charset=iso-8859-1"&gt;     Link     &lt;a&gt;</item>
+		<item>&lt;a href="http://www.lib.cuhk.edu.hk/Common/Reader/Channel/ShowPage.jsp?Cid=114&amp;Pid=5&amp;Version=0&amp;page=0&amp;Charset=iso-8859-1"&gt;     Link     &lt;a&gt;</item>
+		<item>&lt;a href="http://www.lib.cuhk.edu.hk/Common/Reader/Channel/ShowPage.jsp?Cid=112&amp;Pid=6&amp;Version=0&amp;page=0&amp;Charset=iso-8859-1"&gt;     Link     &lt;a&gt;</item>
+		<item>&lt;a href="http://www.lib.cuhk.edu.hk/Common/Reader/Channel/ShowPage.jsp?Cid=110&amp;Pid=7&amp;Version=0&amp;page=0&amp;Charset=iso-8859-1"&gt;     Link     &lt;a&gt;</item>
+		<item>&lt;a href="http://www.lib.cuhk.edu.hk/Common/Reader/Channel/ShowPage.jsp?Cid=106&amp;Pid=9&amp;Version=0&amp;Charset=iso-8859-1&amp;page=0"&gt;     Link     &lt;a&gt;</item>
+		<item>&lt;a href="http://www.lib.cuhk.edu.hk/Common/Reader/Channel/ShowPage.jsp?Cid=104&amp;Pid=10&amp;Version=0&amp;page=0&amp;Charset=iso-8859-1"&gt;     Link     &lt;a&gt;</item>
+		<item>&lt;a href="http://www.lib.cuhk.edu.hk/Common/Reader/Channel/ShowPage.jsp?Cid=542&amp;Pid=43&amp;Version=0&amp;Charset=iso-8859-1&amp;page=0"&gt;     Link     &lt;a&gt;</item>
+	</string-array>
+	
+	<string-array name="mapLinks">
+	    <item>22.419447,114.204866</item>
+	     <item>22.417465,114.207226</item>
+	     <item>22.420629,114.208449</item>
+	     <item>22.420986,114.207827</item>
+	     <item>22.351346,114.123917</item>
+	     <item>22.379444,114.200923</item>
+	     <item>22.419729,114.205053</item>
+<!-- 		<item>http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=the+chinese+university+of+Hong+Kong+University+Library&amp;sll=22.419447,114.204866&amp;sspn=0.001488,0.0018&amp;ie=UTF8&amp;hq=&amp;hnear=The+Chinese+University+Of+Hong+Kong+University+Library,+Library+Rd,+Hong+Kong&amp;ll=&amp;spn=0.003099,0.0036&amp;z=18</item> -->
+<!-- 		<item>http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=Elizabeth+Luce+Moore+Library+Hong+Kong&amp;sll=22.417465,114.207226&amp;sspn=0.00303,0.006035&amp;ie=UTF8&amp;hq=&amp;hnear=The+Chinese+University+Of+Hong+Kong+Elizabeth+Luce+Moore+Library,+Pond+Crescent,+Hong+Kong&amp;ll=22.416851,114.208964&amp;spn=0.00303,0.006035&amp;z=18</item> -->
+<!-- 		<item> http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=chien+mu+library&amp;sll=22.420629,114.208449&amp;sspn=0.005812,0.007982&amp;ie=UTF8&amp;hq=&amp;hnear=The+Chinese+University+Of+Hong+Kong+Chien+Mu+Library,+New+Asia+Cir,+Hong+Kong&amp;ll=22.420986,114.207827&amp;spn=0.00303,0.006035&amp;z=18</item> -->
+<!-- 		<item> http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=Wu+Chung+Multimedia+Library&amp;sll=22.420986,114.207827&amp;sspn=0.00303,0.006035&amp;ie=UTF8&amp;hq=Wu+Chung+Multimedia+Library&amp;hnear=&amp;ll=22.420783,114.205032&amp;spn=0.002906,0.006035&amp;z=18</item> -->
+<!-- 		<item> http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=Wong+Foo+Yuan+Building&amp;sll=22.351346,114.123917&amp;sspn=0.372143,0.510864&amp;ie=UTF8&amp;hq=&amp;hnear=The+Chinese+University+Of+Hong+Kong+Wong+Foo+Yuan+Bldg,+Chung+Chi+Rd,+Hong+Kong&amp;ll=22.415041,114.206459&amp;spn=0.00303,0.006035&amp;z=18</item> -->
+<!-- 		<item> http://maps.google.com/maps?q=Prince+of+Wales+Hospital+Clinical+sciences+Building&amp;hl=en&amp;cd=1&amp;ei=w5HhTMixMo64owT3g5HbCA&amp;sll=22.379444,114.200923&amp;sspn=0.002907,0.006035&amp;ie=UTF8&amp;view=map&amp;cid=10388461698147486336&amp;ved=0CBUQpQY&amp;hq=Prince+of+Wales+Hospital+Clinical+sciences+Building&amp;hnear=&amp;ll=22.379479,114.200558&amp;spn=0.002907,0.006035&amp;z=18</item> -->
+<!-- 		<item> http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=the+chinese+university+of+Hong+Kong+tin+ka+ping+building&amp;sll=22.419729,114.205053&amp;sspn=0.001453,0.001996&amp;ie=UTF8&amp;hq=&amp;hnear=The+Chinese+University+Of+Hong+Kong+Tin+Ka+Ping+Bldg,+Library+Rd,+Hong+Kong&amp;ll=22.419476,114.204337&amp;spn=0.001515,0.003017&amp;z=19</item> -->
+	</string-array>
+
+
+
+
+
+    
+	<string-array name="libNames_OpeningHrs">
+		<item>University Library</item>
+		<item>Learning Garden</item>
+		<item> ---------------- </item>
+		<item> Chung Chi Library </item>
+		<item>  ----------------  </item>
+		<item> New Asia Library </item>
+		<item> ---------------- </item>
+		<item> United College Library </item>
+		<item> ---------------- </item>
+		<item> Law Library </item>
+		<item> Legal Resources Centre </item>
+		<item> ----------------  </item>
+		<item> Architecture Library </item>
+		<item>  Opening hours </item>
+		<item> Staffed services </item>
+		<item> ---------------- </item>
+		<item> Medical Library </item>
+		<item> Staffed services/Book stacks </item>
+		<item> ---------------- </item>
+		<item> Learning Commons (Wu Ho Man Yuen Building) </item>
+	</string-array>
+
+    <string-array name="Mon_FriTimeTable">
+		<item>8:20 a.m.-10:00 p.m.</item>
+		<item>Open 24/7 during semesters for CUHK staff and students only</item>
+		<item> ---------------- </item>
+		<item> 8:20 a.m.-10:00 p.m. </item>
+		<item>  ----------------  </item>
+		<item> 8:20 a.m.-10:00 p.m. </item>
+		<item> ---------------- </item>
+		<item> 8:20 a.m.-10:00 p.m. </item>
+		<item> ---------------- </item>
+		<item> 8:20 a.m.-10:00 p.m. </item>
+		<item> 8:45 a.m.-9:30 p.m </item>
+		<item> ----------------  </item>
+		<item> Open 24/7 for School of Architecture staff and students only </item>
+		<item>  7:30 a.m.-10:00 p.m. </item>
+		<item> 11:00 a.m.-7:00 p.m. </item>
+		<item> ---------------- </item>
+		<item> Open 24/7 </item>
+		<item> 8:30 a.m.-8:30 p.m. </item>
+		<item> ---------------- </item>
+		<item> Open 24/7 during semesters for CUHK staff and students only </item>
+	</string-array>
+
+    <string-array name="SatTimeTable">
+		<item>8:20 a.m.-7:00 p.m.</item>
+		<item>Open 24/7 during semesters for CUHK staff and students only</item>
+		<item> ---------------- </item>
+		<item> 8:20 a.m.-7:00 p.m. </item>
+		<item>  ----------------  </item>
+		<item>8:20 a.m.-7:00 p.m. </item>
+		<item> ---------------- </item>
+		<item> 8:20 a.m.-7:00 p.m.</item>
+		<item> ---------------- </item>
+		<item> 8:20 a.m.-7:00 p.m. </item>
+		<item> 9:00 a.m.-6:00 p.m. </item>
+		<item> ----------------  </item>
+		<item> Open 24/7 for School of Architecture staff and students only </item>
+		<item>  7:30 a.m.-10:00 p.m. </item>
+		<item> No Services </item>
+		<item> ---------------- </item>
+		<item> Open 24/7 </item>
+		<item> 9:00 a.m.-4:30 p.m. </item>
+		<item> ---------------- </item>
+		<item> Open 24/7 during semesters for CUHK staff and students only </item>
+	</string-array>
+
+    <string-array name="SunTimeTable">
+		<item>1:00 p.m.-7:00 p.m.</item>
+		<item>Open 24/7 during semesters for CUHK staff and students only</item>
+		<item> ---------------- </item>
+		<item> 1:00 p.m.-7:00 p.m. </item>
+		<item>  ----------------  </item>
+		<item>1:00 p.m.-7:00 p.m. </item>
+		<item> ---------------- </item>
+		<item> 1:00 p.m.-7:00 p.m.</item>
+		<item> ---------------- </item>
+		<item> 1:00 p.m.-7:00 p.m. </item>
+		<item> Closed </item>
+		<item> ----------------  </item>
+		<item> Open 24/7 for School of Architecture staff and students only </item>
+		<item>  Closed </item>
+		<item> No Services </item>
+		<item> ---------------- </item>
+		<item> Open 24/7 </item>
+		<item> No Services </item>
+		<item> ---------------- </item>
+		<item> Open 24/7 during semesters for CUHK staff and students only </item>
+	</string-array>
+
+   	
+   	<string-array name="libsInfoMenu">
+        <item>Opening Hours</item>
+        <item>Library Contact</item>
+    </string-array>
+    
+    <string-array name="searchMenu">
+        <item>Catalogue Search</item>
+        <item>Advanced Search</item>
+        <item>CUHK Examination Papers</item>
+        <item>New Additions List</item>
+    </string-array>
+    
+    <string-array name="cuhkLibs">
+        <item>Entire Collection</item>
+        <item>Audio-visual Materials</item>
+        <item>E-books </item>
+        <item>CUHK Theses</item>
+        <item>E-books</item>
+        <item>E-Journals &amp; Databases</item>
+        <item>HK Govenment Documents</item>
+        <item>Law Library</item>
+        <item>Local TV Programmes</item>
+        <item>Music Department - Audio Library</item>
+        <item>Music Department - Chinese Music Archive</item>
+        <item>Music Department - Chinese Opera Information Centre</item>
+        <item>Music Department</item>
+        <item>Periodicals</item>
+        <item>Reference Materials</item>
+    </string-array>
+    
+    <string-array name="sections">
+        <item>Home</item>
+        <item>SDK</item>
+        <item>Dev Guide</item>
+        <item>Reference</item>
+        <item>Resources</item>
+        <item>Videos</item>
+        <item>Blog</item>
+    </string-array>
+    
+    
+    <string-array name="color_names">
+        <item>Red</item>
+        <item>Green</item>
+        <item>Blue</item>
+        <item>White</item>
+        <item>Black</item>
+    </string-array>
+    
+
+
+</resources>

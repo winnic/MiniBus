@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/scrollView1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" 
+>
+<LinearLayout 
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:orientation="vertical" 
+    android:layout_marginTop="10dp">
+
+    <TableLayout
+        android:id="@+id/table1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:stretchColumns="1">
+	    <TableRow>
+	      <TextView android:layout_width="0dip" android:layout_height="wrap_content" android:padding="10dip"
+	         android:layout_margin="4dip"	         android:layout_weight="1"	         android:text="Current Location"  />     
+	      <TextView android:id="@+id/curLoc"  android:layout_height="wrap_content" android:padding="10dip"
+	         android:layout_margin="4dip"	         android:layout_weight="2"	          />      
+	    </TableRow>
+
+	    <TableRow>
+	      <TextView  android:layout_width="0dip" android:layout_height="wrap_content" android:padding="10dip"
+	         android:layout_margin="4dip"	         android:layout_weight="1"	          android:text="From"  />     
+	      <TextView android:id="@+id/SP" android:layout_width="0dip"  android:layout_height="wrap_content" android:padding="10dip"
+	         android:layout_margin="4dip"	         android:layout_weight="2"	          />      
+	    </TableRow>
+
+	    <TableRow>
+	      <TextView android:layout_width="0dip" android:layout_height="wrap_content" android:padding="10dip"
+	         android:layout_margin="4dip"	         android:layout_weight="1"	          android:text="To"/>     
+	      <TextView android:id="@+id/DP" android:layout_width="0dip"  android:layout_height="wrap_content" android:padding="10dip"
+	         android:layout_margin="4dip"	         android:layout_weight="2"	          />      
+	    </TableRow>
+    </TableLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginLeft="5dp"
+	    android:layout_marginRight="5dp">
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Stop"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/holo_blue_light" />
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="14dp"
+            android:text="Distance (km)"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/holo_blue_light" />
+
+    </RelativeLayout>
+
+    <TableLayout
+        android:id="@+id/table2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" 
+        android:layout_marginLeft="2dp"
+        android:layout_marginBottom="20dp">
+    </TableLayout>
+
+</LinearLayout>
+    </ScrollView>
