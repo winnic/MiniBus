@@ -18,6 +18,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -25,8 +26,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class Amap extends SherlockActivity implements OnMarkerDragListener{
     static final LatLng HK = new LatLng(22.3964,114.109);
     private GoogleMap mMap;
-    private LatLng o= new LatLng(22.3964,114.109);
-    private LatLng d= new LatLng(22.3964,114.109);
+    private LatLng o= new LatLng(22.2704,114.236);
+    private LatLng d= new LatLng(22.2687,114.242);
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,15 +41,22 @@ public class Amap extends SherlockActivity implements OnMarkerDragListener{
         mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         
         Marker origin = mMap.addMarker(new MarkerOptions()
-                                  .position(HK)
+                                  .position(o)
                                   .draggable(true)
                                   .title("Origin"));
+        Marker destination = mMap.addMarker(new MarkerOptions()
+							        .position(d)
+							        .draggable(true)
+							        .title("Destintion"));
+        
+        origin.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.o));
+        destination.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.d));
         
         // Move the camera instantly to hamburg with a zoom of 15.
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(HK, 15));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(o, 15));
 
         // Zoom in, animating the camera.
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(11), 500, null);
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(12), 500, null);
         
         mMap.setOnMarkerDragListener(this);
         

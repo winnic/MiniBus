@@ -37,8 +37,8 @@ public final class R {
 		public static final int common_signin_btn_light_text_disabled = 0x7f050006;
 		public static final int common_signin_btn_light_text_focused = 0x7f050007;
 		public static final int common_signin_btn_light_text_pressed = 0x7f050005;
-		public static final int common_signin_btn_text_dark = 0x7f05001c;
-		public static final int common_signin_btn_text_light = 0x7f05001d;
+		public static final int common_signin_btn_text_dark = 0x7f050020;
+		public static final int common_signin_btn_text_light = 0x7f050021;
 	}
 	public static final class drawable {
 		public static final int common_signin_btn_icon_dark = 0x7f020072;
@@ -65,10 +65,10 @@ public final class R {
 		public static final int common_signin_btn_text_normal_light = 0x7f020087;
 		public static final int common_signin_btn_text_pressed_dark = 0x7f020088;
 		public static final int common_signin_btn_text_pressed_light = 0x7f020089;
-		public static final int ic_plusone_medium_off_client = 0x7f02008c;
-		public static final int ic_plusone_small_off_client = 0x7f02008d;
-		public static final int ic_plusone_standard_off_client = 0x7f02008e;
-		public static final int ic_plusone_tall_off_client = 0x7f02008f;
+		public static final int ic_plusone_medium_off_client = 0x7f02008d;
+		public static final int ic_plusone_small_off_client = 0x7f02008e;
+		public static final int ic_plusone_standard_off_client = 0x7f02008f;
+		public static final int ic_plusone_tall_off_client = 0x7f020090;
 	}
 	public static final class id {
 		public static final int hybrid = 0x7f060004;

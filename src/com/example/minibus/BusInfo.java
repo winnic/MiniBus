@@ -13,6 +13,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -54,6 +56,10 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 	private double minD=999999999;
 	private int lastPos=0;
 	private static int tmpA=0;
+	
+	private boolean mIsRunning = true;
+	
+	private GradientDrawable bgShape;
 	//////////////////////////////////////
 	private LocationRequest mLocationRequest;
     private LocationClient mLocationClient;
@@ -74,10 +80,14 @@ GooglePlayServicesClient.OnConnectionFailedListener {
     Runnable myTask = new Runnable() {
       @Override
       public void run() {
+    	  if (!mIsRunning) {
+    		  //!!Add a status to your code to stop respawning new tasks:
+              return; // stop when told to stop
+          }
     	  Log.v("testing","myTask");
     	  getAddress(currentLoc_tag);
 //  		startUpdates(currentLoc_tag);
-  		mHandler.postDelayed(myTask,10000);
+  		  mHandler.postDelayed(myTask,1000);  
       }
     };
 	
@@ -101,6 +111,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 	}
 
 	private void setBusInfo() {	
+		bgShape=(GradientDrawable) getResources().getDrawable(R.drawable.roundedtr);
 //		Log.v("testing","setBusInfo");
 		TextView SP=(TextView)findViewById(R.id.SP);
 		TextView DP=(TextView)findViewById(R.id.DP);
@@ -123,10 +134,20 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 			row.addView(tmp2);
 			setLocationOnClick(row);
 			t2.addView(row);
-			if(i==(Integer.valueOf(S_E[0])))
-				row.setBackgroundResource(R.color.soft_grey);
-			else if(i==(Integer.valueOf(S_E[1])))
-				row.setBackgroundResource(R.color.red);
+
+			if(i==(Integer.valueOf(S_E[0]))){
+				bgShape.setColor(0xbbf1c40f);
+				row.setBackgroundResource(R.drawable.roundedtr);	
+			}
+			else if(i==(Integer.valueOf(S_E[1]))){
+				row.setBackgroundResource(R.drawable.roundedtr);
+				GradientDrawable bgShape = (GradientDrawable)row.getBackground();
+				bgShape.setColor(0xaae74c3c);
+			}
+			else if(i>(Integer.valueOf(S_E[0]))&&i<(Integer.valueOf(S_E[1]))){
+				bgShape.setColor(0xFF58BAED);
+				row.setBackgroundResource(R.drawable.roundedtr);
+			}
 		}
 		
 	}
@@ -141,7 +162,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
             	    newFragment.show(getSupportFragmentManager(), "missiles");
 //            	  Dialog dialog = new Dialog(getBaseContext());
 //            	  TextView txt = (TextView)dialog.findViewById(R.id.textbox);
-            	  Log.v("testing","setLocationOnClick onLongClick");Log.v("testing","setLocationOnClick onLongClick");Log.v("testing","setLocationOnClick onLongClick");
+            	  Log.v("testing","setLocationOnClick onLongClick");
 //          		Intent intent = new Intent(android.content.Intent.ACTION_VIEW, uri);
 //          		startActivity(intent);
               }catch(Exception e){
@@ -153,7 +174,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 	}
 
 	private void getBusInfo() {
-//		Log.v("testing","getBusInfo");
+		Log.v("testing","getBusInfo");
 		if (getIntent().getExtras() != null) {
 			String[] busNum_S_E=getIntent().getExtras().getString("bus").split("&S_E=");
 			S_E= busNum_S_E[1].split(";;");
@@ -197,16 +218,37 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 //    	Log.v("testing","closestLoc");
     	if(finalValue<=minD){
     		minD=finalValue;
-    		Log.e("testing","chiName="+chiName[pos]);
+//    		Log.e("testing","chiName="+chiName[pos]);
     		return pos;
     	}
     	return lastPos;
 	}
 
 	private void setCurrentColor(TableRow tableRow) {
-//		Log.v("testing","setCurrentColor");
-		if(tmpA!=Integer.valueOf(S_E[0])&&tmpA!=Integer.valueOf(S_E[1]))
-			tableRow.setBackgroundResource(R.color.honeycombish_blue);
+		Log.v("testing","tmpA & S_E[0] ="+tmpA+" , "+Integer.valueOf(S_E[0]));
+		if(tmpA==(Integer.valueOf(S_E[0]))){
+//			ColorDrawable bgShape = (ColorDrawable)tableRow.getBackground();
+			bgShape.setColor(0xaaf1c40f);
+		}else if(tmpA==Integer.valueOf(S_E[1])){
+			GradientDrawable bgShape = (GradientDrawable)tableRow.getBackground();
+			bgShape.setColor(0xFF1dd2af);
+			Log.v("testing","Arrived!!!");
+			DialogFragment F = new FireMissilesDialogFragment();
+	  		Bundle args = new Bundle();
+	  		args.putString("type","voiceOutDestination");
+	  	    args.putString("destination", chiName[tmpA]);
+	  		F.setArguments(args);
+	  	    F.show(getSupportFragmentManager(), "missiles");
+	  	    
+        	mIsRunning = false;
+        	mHandler.removeCallbacks(myTask);
+		}else{
+//			tableRow.setBackgroundResource(R.color.honeycombish_blue);
+			GradientDrawable bgShape = (GradientDrawable)tableRow.getBackground();
+			bgShape.setColor(0xEE58BAED);
+		}
+		
+	
 	}
 
 	public void getLocation(View v) {
@@ -232,12 +274,15 @@ GooglePlayServicesClient.OnConnectionFailedListener {
             // Get the current location
             Location currentLocation = mLocationClient.getLastLocation();
             currentLocation = stopsLatLng[tmpA];
-            tmpA++;
+            Log.v("testing","tmpA==Stops.length"+tmpA+" "+Stops.length);
+
             updateDistance(currentLocation);
             // Turn the indefinite activity indicator on
 //            mActivityIndicator.setVisibility(View.VISIBLE);
             getSherlock().setProgressBarIndeterminateVisibility(true);
-
+            if(tmpA+1<(Stops.length)){
+            	tmpA++;
+            }
             // Start the background task
             (new BusInfo.GetAddressTask(this)).execute(currentLocation);
         }
@@ -267,6 +312,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 //        mConnectionStatus.setText(R.string.connected);
 
         if (mUpdatesRequested) {
+        	mIsRunning = true;
         	myTask.run();
 //            startPeriodicUpdates();
         }
@@ -441,6 +487,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
     public void onStop() {
 
         super.onStop();
+        mIsRunning = false;
         mHandler.removeCallbacks(myTask);
         Log.v("testing","onStop");
     }
@@ -458,6 +505,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         tmpA=0;
         super.onPause();
         Log.v("testing","onPause");
+        mIsRunning = false;
         mHandler.removeCallbacks(myTask);
     }
 

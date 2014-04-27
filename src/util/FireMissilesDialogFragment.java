@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.InputType;
+import android.util.Log;
 import android.widget.EditText;
 
 public class FireMissilesDialogFragment extends DialogFragment {
@@ -55,6 +56,11 @@ public class FireMissilesDialogFragment extends DialogFragment {
                         // User cancelled the dialog
                     }
                 });
+    		}else if(type=="voiceOutDestination"){
+    			builder.setTitle("Arrived!");
+    			Log.v("testing",getArguments().getString("destination"));
+    			builder.setMessage("Calling out : "+ getArguments().getString("destination")+"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t¦³¸¨~\n");
+    			builder.setCancelable(false);
     		}
         }else{
             builder.setMessage("dialog_fire_missiles")

@@ -11,4 +11,10 @@
     <color name="white">#FFF</color>
     <color name="black">#000</color>
     
+     <color name="flatui_green">#FF1dd2af</color>
+     <color name="flatui_red">#aae74c3c</color>
+     <color name="flatui_yellow">#aaf1c40f</color>
+     <color name="flatui_light_blue">#3358BAED</color>
+    
+    
 </resources>
