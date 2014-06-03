@@ -4,6 +4,9 @@
     <PreferenceCategory android:title="@string/general" >
         <Preference android:title="@string/bus_routes" />
         <Preference android:title="Map" />
+         <Preference android:title="Test" />
+         <Preference android:title="CUHK_MK" />
+         <Preference android:title="MK_CUHK" />
     </PreferenceCategory>
 
 </PreferenceScreen>

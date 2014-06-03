@@ -7,9 +7,12 @@ import java.io.InputStreamReader;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 import android.app.Activity;
-import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,17 +20,15 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.minibus.Amap;
 import com.example.minibus.BusInfo;
+import com.example.minibus.DemoAmap;
+import com.example.minibus.DemoBusInfo;
 import com.example.minibus.ShowBus;
-import com.example.minibus.BusInfo.ErrorDialogFragment;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 
 public class webService {
 	private View outputText;
@@ -86,7 +87,12 @@ public class webService {
 
 			private String getPageContent(String url) {
         		String response = "";
-        		DefaultHttpClient client = new DefaultHttpClient();
+        		HttpParams httpParameters = new BasicHttpParams();
+        		int timeoutConnection = 10000;
+        		int timeoutSocket = 10000;
+        		HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+        		HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);	
+        		DefaultHttpClient client = new DefaultHttpClient(httpParameters);
                 HttpGet httpGet = new HttpGet(url);
                 try {
                     HttpResponse execute = client.execute(httpGet);
@@ -107,21 +113,23 @@ public class webService {
 	        @Override
 	        protected void onPostExecute(String result) {
 	        	if(err!=null){
-	        		Log.v("testing", "connectionn error");
+	        		Log.v("testing", "response = "+result);
+	        		Log.v("testing", "connectionn error  : "+err);
 	        		//connectionn error
-	        		if(err.matches("Connection to [^\\ ]+ refused")){
-	        			Log.v("testing","getPageContent error =" +err);
-		        		DialogFragment F = new FireMissilesDialogFragment();
+	        		if(err.matches("Connection to [^\\ ]+ refused")||err.matches("Connect to [^\\ ]+ timed out")){
+	        			DialogFragment F = new FireMissilesDialogFragment();
 		        		Bundle args = new Bundle();
 		        		args.putString("type","connectionErr");
 		        	    args.putString("err", err);
 		        		F.setArguments(args);
-	            	    F.show(((FragmentActivity) outputText.getContext()).getSupportFragmentManager(), "missiles");
+	            	    F.show(((Activity) outputText.getContext()).getFragmentManager(), "missiles");
+	            	    ((Amap) outputText.getContext()).activateProgressBar(false);
 		        		return;
 	        		}else{
 	        			Log.v("testing","unkown connection error");
 	        			DialogFragment F = new FireMissilesDialogFragment();
-	            	    F.show(((FragmentActivity) outputText.getContext()).getSupportFragmentManager(), "missiles");
+	        			F.show(((Activity) outputText.getContext()).getFragmentManager(), "missiles");
+	        			((Amap) outputText.getContext()).activateProgressBar(false);
 	        		}
 	        	}
 	        	
@@ -135,13 +143,25 @@ public class webService {
 	 				intent.putExtra("method", 1);
 	 				Log.v("testing","going in to ShowBus activity");
 	 				outputText.getContext().startActivity(intent);
-	        	 }else if(method==2){
-	 				Intent intent = new Intent(outputText.getContext(), BusInfo.class);
+	        	 }else if(method==2){		    
+	        		if(outputText.getContext().getClass().getCanonicalName().matches(".*\\.Amap.*"))
+	        			 ((Amap) outputText.getContext()).activateProgressBar(false);
+	        		else if(outputText.getContext().getClass().getCanonicalName().matches(".*\\.DemoAmap.*"))
+	        			((DemoAmap) outputText.getContext()).activateProgressBar(false);
+	        		else
+	        			((ShowBus) outputText.getContext()).activateProgressBar(false); 
+	 				Intent intent = new Intent(outputText.getContext(), DemoBusInfo.class);
 	 				intent.putExtra("busInfo", result);
 	 				intent.putExtra("bus", bus);
+	 				SharedPreferences sharedPref =  ((Activity) outputText.getContext()).getSharedPreferences("busInfoVariables",Context.MODE_PRIVATE);
+                	SharedPreferences.Editor editor = sharedPref.edit();
+                	editor.putString("busInfo", result);
+                	editor.putString("bus", bus);
+                	editor.commit();
 	 				Log.v("testing","going in to busInfo activity");
 	 				outputText.getContext().startActivity(intent);
 	        	 }else if(method==3){
+	        		 ((Amap) outputText.getContext()).activateProgressBar(false); 
 					Intent intent = new Intent(outputText.getContext(), ShowBus.class);
 					intent.putExtra("buslist_str", result);
 					intent.putExtra("method", 3);

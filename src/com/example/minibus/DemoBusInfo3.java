@@ -1,29 +1,33 @@
 package com.example.minibus;
 
 import java.io.IOException;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import util.FireMissilesDialogFragment;
 import util.FuncLib;
 import util.LocationUtils;
 import util.onClickListenerWithParam;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.graphics.drawable.GradientDrawable;
 import android.location.Address;
+import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
+import android.provider.Settings;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -37,18 +41,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.ActionBarSherlock;
+import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.maps.model.LatLng;
 
-public class BusInfo extends FragmentActivity implements
+public class DemoBusInfo3 extends FragmentActivity implements
 LocationListener,
-GooglePlayServicesClient.ConnectionCallbacks,
-GooglePlayServicesClient.OnConnectionFailedListener,
 TextToSpeech.OnInitListener {
 	private TextToSpeech tts;
 	
@@ -61,43 +61,33 @@ TextToSpeech.OnInitListener {
 	private int numStops;
 	private double minD=999999999;
 	private int lastPos=0;
-	private static int tmpA=0;
+	//private static int tmpA=0;
 	
-	private boolean mIsRunning = true;
+//	private boolean mIsRunning = true;
 	
 	private GradientDrawable bgShape;
 	//////////////////////////////////////
-	private LocationRequest mLocationRequest;
-    private LocationClient mLocationClient;
+//	private LocationRequest mLocationRequest;
+//    private LocationClient mLocationClient;
     boolean mUpdatesRequested = false;
     SharedPreferences mPrefs;
     SharedPreferences.Editor mEditor;
 	///////////////////////////////////////
     private TextView currentLoc_tag;
     private ActionBarSherlock mSherlock;
-    protected final ActionBarSherlock getSherlock() {
+    public final ActionBarSherlock getSherlock() {
         if (mSherlock == null) {
             mSherlock = ActionBarSherlock.wrap(this, ActionBarSherlock.FLAG_DELEGATE);
         }
         return mSherlock;
     }
-    ///////////////
-    private Handler mHandler= new Handler();
-    Runnable myTask = new Runnable() {
-      @Override
-      public void run() {
-    	  if (!mIsRunning) {
-    		  //!!Add a status to your code to stop respawning new tasks:
-              return; // stop when told to stop
-          }
-    	  Log.v("testing","myTask");
-    	  getAddress(currentLoc_tag);
-//  		startUpdates(currentLoc_tag);
-  		  mHandler.postDelayed(myTask,3000);  
-      }
-    };
+
 
 	private boolean expand=false;
+
+	private LocationManager locationManager;
+
+	private String provider;
 
 	
 	public void onCreate(Bundle savedInstanceState) {
@@ -105,7 +95,6 @@ TextToSpeech.OnInitListener {
 		// progress dialog
 		getSherlock().requestFeature((int)Window.FEATURE_INDETERMINATE_PROGRESS);
 		getSherlock().setProgressBarIndeterminate(true);
-		
 		getBusInfo();
 				
 		super.onCreate(savedInstanceState);
@@ -114,9 +103,10 @@ TextToSpeech.OnInitListener {
 		//set basic info
 		setBusInfo();
 
-		locationServiceInit();
 		TableLayout t1 = (TableLayout)findViewById(R.id.table1);
 		currentLoc_tag= (TextView)((TableRow)t1.getChildAt(0)).getChildAt(1);
+		
+		trackCurrentLoc();
 	}
 
 	private void setBusInfo() {			
@@ -126,14 +116,14 @@ TextToSpeech.OnInitListener {
 //		TextView DP=(TextView)findViewById(R.id.DP);
 //		SP.setText(chiName[Integer.valueOf(S_E[0])]);
 //		DP.setText(chiName[Integer.valueOf(S_E[1])]);
-		tmpA=Integer.valueOf(S_E[0]);
+		//tmpA=Integer.valueOf(S_E[0]);
 		
 		final TableLayout t2=(TableLayout)findViewById(R.id.table2);
 
 		for (int i=0;i<numStops;i++){
 			TextView tmp1=new TextView(this);
 			TextView tmp2=new TextView(this);
-			tmp1.setText(engName[i]);
+			tmp1.setText(chiName[i]);
 //			tmp2.setText(price[i]);
 			if(i<(Integer.valueOf(S_E[0]))||i>(Integer.valueOf(S_E[1]))){
 				tmp1.setLayoutParams(new TableRow.LayoutParams(0, 0, 3));
@@ -146,7 +136,7 @@ TextToSpeech.OnInitListener {
 			TableRow row=new TableRow(this);
 			row.addView(tmp1);
 			row.addView(tmp2);
-			setLocationOnClick(row);
+//			setLocationOnClick(row);
 			t2.addView(row);
 
 			if(i==(Integer.valueOf(S_E[0]))){
@@ -235,22 +225,27 @@ TextToSpeech.OnInitListener {
 		String[] busNum_S_E = null;
 		String bookInfo = null;
 		if (getIntent().getExtras() != null) {
-			Log.v("testing","not null");
 			busNum_S_E=getIntent().getExtras().getString("bus").split("&S_E=");
 			bookInfo= getIntent().getExtras().getString("busInfo");
 		}else{
-			Log.v("testing","null");
 			//for testing
 			 SharedPreferences sharedPref =this.getSharedPreferences("busInfoVariables",Context.MODE_WORLD_READABLE);
 			 if(sharedPref.getString("busInfo", null)!=null){
 				 bookInfo = sharedPref.getString("busInfo",null);
 			 }
+			 Log.v("testing","bookInfo = "+ bookInfo);
 			 if(sharedPref.getString("bus", null)!=null){
 				 busNum_S_E = sharedPref.getString("bus",null).split("&S_E=");
 			 }
+			 Log.v("testing","busNum_S_E = "+ sharedPref.getString("bus",null));
 		}
+/////////////////only for testing
+		busNum_S_E="RED_287&S_E=0;;2".split("&S_E=");
+//		bookInfo="Æ‘ª®ß{§Ω¶@§p§⁄¡`Ø∏;;;;0;;22.3186;;114.169;;{}ØÔ™K®§¬Â∞|;;Kwai Chung Hospital Road;;0;;22.3424;;114.133;;{}µÿ≠˚êh;;Wah Yuen Chuen;;0;;22.3492;;114.135;;{}πl∂Æ∞a;;The Apex;;0;;22.3662;;114.137;;{}∏™ØF™·∂È;;Kwai Chung;;0;;22.3695;;114.14;;{}§W∏™ØF©x•ﬂ§§æ«;;Kwai Chung;;0;;22.3665;;114.142;;{}•€∆Xêh11Æy;;Shek Lei (ii) Estate Block 11;;0;;22.3658;;114.141;;{}•€±˘µÛ°A•€∆X∞”≥ı§G¥¡;;;;0;;22.3659;;114.139;;{}";
+		bookInfo="¶Ë¨vµÊ´nµÛ°A©Ù®§πD;;Sai Yeung Choi Street South & Mong Kok Road;;0;;22.3208;;114.17;;{}§E®{§s;;Kau To Shan;;0;;22.4113;;114.202;;{}≠ª¥‰§§§Â§jæ«;;Chinese University of Hong Kong;;0;;22.4202;;114.207;;{}ºÃæ≈y;;Cheung Shue Tan;;0;;22.4262;;114.201;;{}≥¿ØÙ§s≤¯;;Deerhill Bay;;0;;22.4292;;114.197;;{}ØÔ™Kß|°@°@°@°@°@°@°@°@°@°@[ ∫∞¿‹§s ];;Lai Chi Hang;;0;;22.432;;114.18;;{}≈|ªAª®Æx°@°@°@°@°@°@°@°@[ ªBªA™·∂È ];;Emerald Palace;;0;;22.4392;;114.183;;{}πl©…∂Æ≠b;;Chaleau Royale;;0;;22.4405;;114.178;;{}ºs∫÷êh;;Kwong Fuk Estate;;0;;22.4464;;114.173;;{}πB¿Y®§®Ω;;Wan Tau Kok Lane;;0;;22.4462;;114.169;;{}πB¿YµÛ;;Wan Tau Street;;0;;22.4464;;114.168;;{}ƒ_∂mæÙ;;Po Heung Bridge;;0;;22.4501;;114.167;;{}§jÆH¬¬ºVπCº÷≥ı;;Tai Po Old Market Playground;;0;;22.4519;;114.166;;{}§”©Mêh;;Tai Wo Estate;;0;;22.4524;;114.158;;{}§jÆH¨F©≤¶X∏p;;Tai Po Government Offices;;0;;22.451;;114.164;;{}§jÆH¬¬ºVπCº÷≥ı°@°@°@°@°@[ §K∏π™·∂È ];;Tai Po Old Market Playground;;0;;22.4519;;114.166;;{}§jÆH§§§ﬂ;;Tai Po Centre Block 22;;0;;22.45;;114.169;;{}";	
+//		bookInfo="•€±˘µÛ°A•€∆X∞”≥ı§G¥¡;;;;0;;22.3659;;114.139;;{}•€®©µÛ;;Shek Pui Street;;0;;22.3641;;114.136;;{}•€≠^Æ|;;Shek Ying Path;;0;;22.3647;;114.136;;{}πl∂Æ∞a;;The Apex;;0;;22.3662;;114.137;;{}ƒR¥π§§§ﬂ;;Regent Centre Car Park;;0;;22.3679;;114.138;;{}•€©y∏Ù;;Shek Yi Road;;0;;22.3684;;114.139;;{}¬≈•–µÛ;;Lam Tin Street;;0;;22.3691;;114.138;;{}§j∫€§f™oØ∏°@°@°@°@°@[ ¥‰≈K§j∫€§fØ∏ ];;Tai Wo Hau Station;;0;;22.3708;;114.125;;{}Ø˛∆W™·∂È;;Tsuen Wan Garden;;0;;22.37;;114.122;;{}Ø˛∆W´∞•´ºs≥ı;;Tsuen Wan Town Square;;0;;22.3709;;114.117;;{}Ø˛∆WµÛ•´;;Tsuen Wan Market;;0;;22.3714;;114.117;;{}§t¿sµÛ°A∆M¶aß{;;Chuen Lung Street & Hau Tei Square;;0;;22.3706;;114.116;;{}";
+		///////////////////only for testing
 		S_E= busNum_S_E[1].split(";;");
-		Log.v("testing",S_E[0]);
 		setTitle(busNum_S_E[0]);
 		Stops=bookInfo.split("\\{\\}");
 		numStops=Stops.length;
@@ -283,28 +278,27 @@ TextToSpeech.OnInitListener {
 			tmp.setText(Double.toString(finalValue));
 			lastPos=closestLoc(finalValue,i);
 //		Log.d("testing","displacement="+currentLocation.)
-		}		
+		}
 		setCurrentColor((TableRow)t2.getChildAt(lastPos));
 	}
 
     private int closestLoc(double finalValue, int pos) {
 //    	Log.v("testing","closestLoc");
-    	if(finalValue<minD){
+    	if(finalValue<=minD){
     		minD=finalValue;
-//    		Log.e("testing","chiName="+chiName[pos]);
+    		Log.e("testing","chiName="+chiName[pos]+"; minD = "+minD);
     		return pos;
     	}
     	return lastPos;
 	}
 
 	private void setCurrentColor(TableRow tableRow) {
-		Log.v("testing","tmpA & S_E[0] ="+tmpA+" , "+Integer.valueOf(S_E[0]));
+//		Log.v("testing","tmpA & S_E[0] ="+tmpA+" , "+Integer.valueOf(S_E[0]));
 		for(int i=Integer.valueOf(S_E[0])+1;i<Integer.valueOf(S_E[1]);i++){
 			bgShape = (GradientDrawable)((TableLayout)tableRow.getParent()).getChildAt(i).getBackground();
 			if(bgShape!=null)
 				bgShape.setColor(0x4458BAED);
 		}
-		
 		if(lastPos==(Integer.valueOf(S_E[0]))){
 //			ColorDrawable bgShape = (ColorDrawable)tableRow.getBackground();
 			bgShape = (GradientDrawable)tableRow.getBackground();
@@ -316,9 +310,8 @@ TextToSpeech.OnInitListener {
 				bgShape.setColor(0xFF1dd2af);
 			Log.v("testing","Arrived!!!");
 			popUpArrived();
-	  	    speakOut("≠¯∏”•qæ˜,, §U≠”Ø∏¶≥∏®.");
-        	mIsRunning = false;
-        	mHandler.removeCallbacks(myTask);
+//        	mIsRunning = false;
+//        	mHandler.removeCallbacks(myTask);
 		}else{
 //			tableRow.setBackgroundResource(R.color.honeycombish_blue);
 			bgShape = (GradientDrawable)tableRow.getBackground();
@@ -329,17 +322,9 @@ TextToSpeech.OnInitListener {
 	
 	}
 
-	public void getLocation(View v) {
-		Log.v("testing","getLocation");
-        if (servicesConnected()) {
-            Location currentLocation = mLocationClient.getLastLocation();
-            //  mLatLng.setText(LocationUtils.getLatLng(this, currentLocation));
-        }
-    }
-
-    // For Eclipse with ADT, suppress warnings about Geocoder.isPresent()
-    @SuppressLint("NewApi")
-    public void getAddress(View v) {
+	
+	@SuppressLint("NewApi")
+    public void getAddress(View v, Location location) {
     	Log.v("testing","getAddress");
         // In Gingerbread and later, use Geocoder.isPresent() to see if a geocoder is available.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD && !Geocoder.isPresent()) {
@@ -348,94 +333,12 @@ TextToSpeech.OnInitListener {
             return;
         }
 
-        if (servicesConnected()) {
-            // Get the current location
-            Location currentLocation = mLocationClient.getLastLocation();
-            currentLocation = stopsLatLng[tmpA];
-            Log.v("testing","tmpA==Stops.length"+tmpA+" "+Stops.length);
+        getSherlock().setProgressBarIndeterminateVisibility(true);
 
-            updateDistance(currentLocation);
-            // Turn the indefinite activity indicator on
-//            mActivityIndicator.setVisibility(View.VISIBLE);
-            getSherlock().setProgressBarIndeterminateVisibility(true);
-            if(tmpA+1<(Stops.length)){
-            	tmpA++;
-            }
-            // Start the background task
-            (new BusInfo.GetAddressTask(this)).execute(currentLocation);
-        }
+        (new DemoBusInfo3.GetAddressTask(this)).execute(location);
+
     }
-
-	public void startUpdates(View v) {
-    	Log.v("testing","startUpdates");
-        mUpdatesRequested = true;
-
-        if (servicesConnected()) {
-            startPeriodicUpdates();
-        }
-    }
-
-    public void stopUpdates(View v) {
-    	Log.v("testing","stopUpdates");
-        mUpdatesRequested = false;
-
-        if (servicesConnected()) {
-            stopPeriodicUpdates();
-        }
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-    	Log.v("testing","onConnected");
-//        mConnectionStatus.setText(R.string.connected);
-
-        if (mUpdatesRequested) {
-        	mIsRunning = true;
-        	myTask.run();
-//            startPeriodicUpdates();
-        }
-    }
-
-    @Override
-    public void onDisconnected() {
-    	Log.v("testing","onDisconnected");
-//        mConnectionStatus.setText(R.string.disconnected);
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-    	Log.v("testing","onConnectionFailed");
-        if (connectionResult.hasResolution()) {
-            try {
-                connectionResult.startResolutionForResult(
-                        this,
-                        LocationUtils.CONNECTION_FAILURE_RESOLUTION_REQUEST);
-            } catch (IntentSender.SendIntentException e) {
-                e.printStackTrace();
-            }
-        } else {
-            showErrorDialog(connectionResult.getErrorCode());
-        }
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-    	Log.v("testing","onLocationChanged");
-  		getAddress(currentLoc_tag);
-    }
-
-    private void startPeriodicUpdates() {
-    	Log.v("testing","startPeriodicUpdates");
-        mLocationClient.requestLocationUpdates(mLocationRequest, this);
-//        mConnectionState.setText(R.string.location_requested);
-    }
-
-    private void stopPeriodicUpdates() {
-    	Log.v("testing","stopPeriodicUpdates");
-        mLocationClient.removeLocationUpdates(this);
-//        mConnectionState.setText(R.string.location_updates_stopped);
-    }
-
+	
     protected class GetAddressTask extends AsyncTask<Location, Void, String> {
         // Store the context passed to the AsyncTask when the system instantiates it.
         Context localContext;
@@ -446,7 +349,6 @@ TextToSpeech.OnInitListener {
             super();
             // Set a Context for the background task
             localContext = context;
-        	Log.v("testing","GetAddressTask");
         }
 
         /**
@@ -510,173 +412,93 @@ TextToSpeech.OnInitListener {
     		currentLoc_tag.setText(address);
         }
     }
+	
+///////////////////
+/////////////////// trackCurrentLocOnMap
+///////////////////
+	private void trackCurrentLoc() {
+		LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
+		boolean enabledGPS = service
+		  .isProviderEnabled(LocationManager.GPS_PROVIDER);
+		boolean enabledWiFi = service
+		  .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-    private boolean servicesConnected() {
-    	Log.v("testing","servicesConnected");
-        // Check that Google Play services is available
-        int resultCode =
-                GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+		if (!enabledGPS) {
+			Toast.makeText(this, "GPS signal not found", Toast.LENGTH_LONG).show();
+			Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+			startActivity(intent);
+		}
 
-        // If Google Play services is available
-        if (ConnectionResult.SUCCESS == resultCode) {
-            // In debug mode, log the status
-            Log.d("testing", getString(R.string.play_services_available));
+		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-            // Continue
-            return true;
-        // Google Play services was not available for some reason
-        } else {
-            // Display an error dialog
-            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(resultCode, this, 0);
-            if (dialog != null) {
-                ErrorDialogFragment errorFragment = new ErrorDialogFragment();
-                errorFragment.setDialog(dialog);
-                errorFragment.show(getFragmentManager(), LocationUtils.APPTAG);
-            }
-            return false;
-        }
-    }
-    
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-    	Log.v("testing","onActivityResult");
-        switch (requestCode) {
-            case LocationUtils.CONNECTION_FAILURE_RESOLUTION_REQUEST :
-
-                switch (resultCode) {
-                    case Activity.RESULT_OK:
-                        Log.d(LocationUtils.APPTAG, getString(R.string.resolved));
-                    break;
-                    default:
-                        Log.d(LocationUtils.APPTAG, getString(R.string.no_resolution));
-                        // Display the result
-//                        mConnectionState.setText(R.string.disconnected);
-//                        mConnectionStatus.setText(R.string.no_resolution);
-                    break;
-                }
-            default:
-               Log.d(LocationUtils.APPTAG,
-                       getString(R.string.unknown_activity_request_code, requestCode));
-               break;
-        }
-    }
-   
-    @Override
-    public void onStop() {
-
-        super.onStop();
-        mIsRunning = false;
-        mHandler.removeCallbacks(myTask);
-        Log.v("testing","onStop");
-    }
-   
-    @Override
-    public void onPause() {
-
-        // Save the current setting for updates
-        mEditor.putBoolean(LocationUtils.KEY_UPDATES_REQUESTED, mUpdatesRequested);
-        mEditor.commit();
-        if (mLocationClient.isConnected()) {
-            stopPeriodicUpdates();
-        }
-        mLocationClient.disconnect();
-        super.onPause();
-        Log.v("testing","onPause");
-        mIsRunning = false;
-        mHandler.removeCallbacks(myTask);
-    }
-
-    @Override
-    public void onStart() {
-
-        super.onStart();
-        Log.v("testing","onStart");
-    }
-    
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.v("testing","onResume");
-
-        // If the app already has a setting for getting location updates, get it
-        if (mPrefs.contains(LocationUtils.KEY_UPDATES_REQUESTED)) {
-            mUpdatesRequested = mPrefs.getBoolean(LocationUtils.KEY_UPDATES_REQUESTED, false);
-
-        // Otherwise, turn off location updates until requested
-        } else {
-            mEditor.putBoolean(LocationUtils.KEY_UPDATES_REQUESTED, false);
-            mEditor.commit();
-        }
-        mLocationClient.connect();
-//        mHandler.postDelayed(myTask, 5000);
-
-    }
-
-	private void locationServiceInit() {
-		Log.v("testing","locationServiceInit");
-		 mLocationRequest = LocationRequest.create();
-		 mLocationRequest.setInterval(LocationUtils.UPDATE_INTERVAL_IN_MILLISECONDS);
-		 mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-		 mLocationRequest.setFastestInterval(LocationUtils.FAST_INTERVAL_CEILING_IN_MILLISECONDS);
-		 mUpdatesRequested = true;
-		 mPrefs = getSharedPreferences(LocationUtils.SHARED_PREFERENCES, Context.MODE_PRIVATE);
-		 mEditor = mPrefs.edit();
-		 mLocationClient = new LocationClient(this, this, this);
+		Criteria criteria = new Criteria();
+		provider = locationManager.getBestProvider(criteria, false);
+		Location location = locationManager.getLastKnownLocation(provider);
+		
+		// Initialize the location fields
+		if (location != null) {
+			Toast.makeText(this, "Selected Provider " + provider,
+			      Toast.LENGTH_SHORT).show();
+			
+			getAddress(currentLoc_tag,location);
+			
+			onLocationChanged(location);
+		} else {
+		
+		//do something
+		}
+	
 	}
-    
-    private void showErrorDialog(int errorCode) {
-    	Log.v("testing","showErrorDialog");
-        Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(
-            errorCode,
-            this,
-            LocationUtils.CONNECTION_FAILURE_RESOLUTION_REQUEST);
 
-        // If Google Play services can provide an error dialog
-        if (errorDialog != null) {
+/* Request updates at startup */
+	@Override
+	protected void onResume() {
+		super.onResume();
+		locationManager.requestLocationUpdates(provider, 400, 1, this);
+	}
 
-            // Create a new DialogFragment in which to show the error dialog
-            ErrorDialogFragment errorFragment = new ErrorDialogFragment();
-
-            // Set the dialog in the DialogFragment
-            errorFragment.setDialog(errorDialog);
-
-            // Show the error dialog in the DialogFragment
-            errorFragment.show(getFragmentManager(), LocationUtils.APPTAG);
-        }
-    }
-
-    public static class ErrorDialogFragment extends DialogFragment {
-
-        // Global field to contain the error dialog
-        private Dialog mDialog;
-
-        /**
-         * Default constructor. Sets the dialog field to null
-         */
-        public ErrorDialogFragment() {
-            super();
-            mDialog = null;
-        }
-
-        /**
-         * Set the dialog to display
-         *
-         * @param dialog An error dialog
-         */
-        public void setDialog(Dialog dialog) {
-            mDialog = dialog;
-        }
-
-        /*
-         * This method must return a Dialog to the DialogFragment.
-         */
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-        	Log.v("testing","onCreateDialog");
-            return mDialog;
-        }
-    }
-
+/* Remove the locationlistener updates when Activity is paused */
+	@Override
+	protected void onPause() {
+		super.onPause();
+		locationManager.removeUpdates(this);
+	}
+	
+	@Override
+	public void onLocationChanged(Location location) {
+		Date d=new Date(new Timestamp(System.currentTimeMillis()).getTime());
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a");
+		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        Log.v("testing","lastPos = "+lastPos+" at Time = "+sdf.format(d));
+        updateDistance(location);
+		
+		double lat =  location.getLatitude();
+		double lng = location.getLongitude();
+		LatLng coordinate = new LatLng(lat, lng);
+		Toast.makeText(this, "Location " + coordinate.latitude+","+coordinate.longitude,
+		  Toast.LENGTH_LONG).show();
+//		currentLoc.setPosition(coordinate);
+	}
+	
+	
+	@Override
+	public void onProviderDisabled(String provider) {
+		Toast.makeText(this, "Enabled new provider " + provider,Toast.LENGTH_SHORT).show();
+	}
+	
+	
+	@Override
+	public void onProviderEnabled(String provider) {
+		Toast.makeText(this, "Disabled provider " + provider,Toast.LENGTH_SHORT).show();	
+	}
+	
+	
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+	// TODO Auto-generated method stub
+	
+	}
+	
 	////////////////////////////////////TTS
 	@Override
 	public void onInit(int status) {
@@ -698,7 +520,7 @@ TextToSpeech.OnInitListener {
             Log.e("TTS", "Initilization Failed!");
         }
 	}
-
+	
 	@Override
     public void onDestroy() {
         // Don't forget to shutdown tts!
@@ -722,5 +544,6 @@ TextToSpeech.OnInitListener {
   		F.setArguments(args);
   	    F.show(getFragmentManager(), "missiles");
 	}
+
 
 }

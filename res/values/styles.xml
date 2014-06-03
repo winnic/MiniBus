@@ -5,6 +5,19 @@
         <item name="homeAsUpIndicator">@drawable/new_indicator</item>
         <item name="android:homeAsUpIndicator">@drawable/new_indicator</item>
     </style>
+<!--  ////////////////////////    -->
+    <style name="Theme.Example" parent="@style/Theme.Sherlock.Light.DarkActionBar">
+        <item name="actionBarStyle">@style/ActionBar.Solid.Example</item>
+        <item name="actionModeBackground">@drawable/cab_background_top_example</item>
+        <item name="actionModeSplitBackground">@drawable/cab_background_bottom_example</item>
+    </style>
+
+    <style name="ActionBar.Solid.Example" parent="@style/Widget.Sherlock.Light.ActionBar.Solid.Inverse">
+        <item name="background">@drawable/ab_solid_example</item>
+        <item name="backgroundStacked">@drawable/ab_stacked_solid_example</item>
+        <item name="backgroundSplit">@drawable/ab_bottom_solid_example</item>
+    </style>
+<!--     /////////////////////////////// -->
     
 	<style name="MyTheme" parent="Theme.Sherlock.Light.DarkActionBar">
 	    <item name="homeAsUpIndicator">@drawable/new_indicator</item>
@@ -15,8 +28,8 @@
 	</style>
 	
 	<style name="MyActionBarStyle" parent="@style/Widget.Sherlock.Light.ActionBar.Solid.Inverse">
-		<item name="android:backgroundStacked">#FF777777</item>
- 		<item name="backgroundStacked">#FF777777</item>
+		<item name="android:backgroundStacked">#ff000000</item>
+ 		<item name="backgroundStacked">#ff000000</item>
 <!--  		<item name="android:titleTextStyle">@style/My.ActionBar.TitleTextStyle</item> -->
 <!--  		<item name="titleTextStyle">@style/My.ActionBar.TitleTextStyle</item> -->
 <!--         <item name="android:subtitleTextStyle">@android:style/TextAppearance.Holo.Widget.ActionBar.Subtitle.Inverse</item> -->

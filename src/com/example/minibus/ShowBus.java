@@ -63,6 +63,10 @@ public class ShowBus extends Activity {
 				      e.printStackTrace();
 				    }
 			}
+			if(busList==null){
+				busList=new String[1];
+				busList[0]="no result matched";
+			}
 			Log.w("testing","busList.length="+busList.length);
 
 //			websites=new String[busList.length];
@@ -134,7 +138,11 @@ public class ShowBus extends Activity {
 	public void onBookPressed(int pos,View view) {
 		activateProgressBar(true);
 		webService connectToUrl=new webService();
-		String url="/redmini/api.php?action=fetch_bus&bus="+busList[pos]+"&S_E="+S_E[pos];
+		String url="";
+		if(method==3)
+			url="/redmini/api.php?action=fetch_bus&bus="+busList[pos]+"&S_E="+S_E[pos];
+		if(method==1)
+			url="/redmini/api.php?action=fetch_bus&bus="+busList[pos]+"&S_E="+"0;;0";
 		Log.v("testing","onBookPressed pos = "+pos+" && url = "+url);
 		connectToUrl.contextStartBrowerTo_URL(this.getBaseContext(),view,url,2);
 	}
